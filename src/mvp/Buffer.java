@@ -3,19 +3,25 @@ package mvp;
 import java.util.LinkedList;
 import java.util.Queue;
 
+import javax.swing.table.DefaultTableModel;
+
+
 public class Buffer {
 	public Queue<String> buffer;
 	public int numero, completados;
 	public int ProductorNum, ConsumidorNum;
 	static int count = 1;
+	private GUIDesignFrame gui;
+	
 	
 	// Constructor
-	public Buffer(int numero, int ProductorNum, int ConsumidorNum) {
+	public Buffer(int numero, int ProductorNum, int ConsumidorNum, GUIDesignFrame gui) {
 		this.numero = numero;
 		this.ProductorNum = ProductorNum;
 		this.ConsumidorNum = ConsumidorNum;
 		this.buffer = new LinkedList<>();
 		this.completados = 0;
+		this.gui = gui;
 	}
 	
 	// Producir hilo
@@ -31,9 +37,19 @@ public class Buffer {
 		 }
 		 
 		 this.agregarInput(input);
-		 this.printBuffer();
+		 try{
+	            DefaultTableModel model = (DefaultTableModel) gui.jTable1.getModel();
+	            model.addRow(new Object[]{input});
+	        }
+	        catch(Exception e){
+	            System.out.println(e);
+	        }
+
+	        gui.labelTareasPendientes.setText(this.buffer.size() + "");
+	        
 		 notify();
 	 }
+	 
 	 // Consumir hilo
 	 synchronized String consumir() {
 		 String input = "";
@@ -51,6 +67,13 @@ public class Buffer {
 		 // Hacer la operacion de Scheme
 		 input = this.agarrarInput();
 	     this.completados++;
+	        try{
+	            DefaultTableModel model1 = (DefaultTableModel) gui.jTable1.getModel();
+	            model1.removeRow(0);
+	        } catch (Exception e){
+	            System.out.println(e);
+	        }
+	     gui.labelTareasPendientes.setText(this.buffer.size() + "");
 	     input = input.substring(1, input.length()-1);
 	     String[] operaciones = input.split(" ");
 	     Double resultado = 0.0; 
@@ -70,15 +93,19 @@ public class Buffer {
          }
 	      
 	     String output = resultado.toString();
-	     this.printBuffer();
+	     try{
+	            DefaultTableModel model2 = (DefaultTableModel) gui.jTable2.getModel();
+	            model2.addRow(new Object[]{input, output});
+	        } catch (Exception e){
+	            System.out.println(e);
+	        }
+
+	     gui.labelTareasCompletadas.setText(this.completados + "");
 	     notify();
-	     return input+" = "+output;
+	     return input + " = " + output;
 	  }
 
-	 synchronized static void print(String string) {
-		 System.out.print(count++ + " ");
-	     System.out.println(string);
-	 }
+
 	 
 	 private String agregarInput(String input) {
 		 if(this.buffer.size() < this.numero) {
@@ -88,14 +115,6 @@ public class Buffer {
 		 return null;
 	  }
 	 
-	 private void printBuffer() {
-		 String output = "[";
-		 for(String c : this.buffer) {
-			 output += c + ", ";
-		 }
-		 output += "]";
-		 System.out.println(output);
-	}
 	 
 	private String agarrarInput() {
 		if(!this.buffer.isEmpty()) {

@@ -10,7 +10,7 @@ public class Productor extends Thread {
 	public int tiempoMin;
 	final Character[] operaciones = {'+', '-', '*', '/'};
 	
-	public Productor(Buffer buffer, int tiempoDeEspera, int tiempoMax, int tiempoMin) {
+	public Productor(Buffer buffer, int tiempoDeEspera, int tiempoMin, int tiempoMax) {
         this.buffer = buffer;
         this.tiempoDeEsperaProductor = tiempoDeEspera;
         this.activo = false;
@@ -21,7 +21,7 @@ public class Productor extends Thread {
 	@Override
 	public void run() {
 		this.activo = true;
-		System.out.println("Producer iniciado ...");
+	
 		String input;
 		
 		while(activo) {
@@ -31,7 +31,6 @@ public class Productor extends Thread {
 			String segunda = ((Integer)(tiempoMin + r.nextInt(tiempoMax - tiempoMin))).toString();
 			input = "(" + operacion + " " + primera + " " + segunda + ")";
 			this.buffer.producir(input);
-			Buffer.print("Productor creado: " + input);
 			
 			try {
                 Thread.sleep(this.tiempoDeEsperaProductor);

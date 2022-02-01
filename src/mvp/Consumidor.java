@@ -15,13 +15,10 @@ public class Consumidor extends Thread{
 	@Override
 	public void run() {
 		this.activo = true;
-	    System.out.println("Consumidor corriendo ...");
-	    String input;
+
 	    
 	    while(activo) {
-	    	input = this.buffer.consumir();
-	    	Buffer.print("Consumidor consumido: " + input);
-	    	
+	    	this.buffer.consumir();
             try {
                 Thread.sleep(this.tiempoEsperaConsumidor);
             } catch (InterruptedException e) {
