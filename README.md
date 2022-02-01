@@ -1,4 +1,4 @@
-# Final Project Programming Languages <br/><br/>
+# Final Project Programming Languages <br/>
 Execution program for producer and consumer threads with GUI for inputs/outputs.<br/>
 Inputs:<br/>
 Number of producers (1 - 10).<br/>
